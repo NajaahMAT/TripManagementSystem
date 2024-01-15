@@ -25,8 +25,7 @@ Assumptions:
 a.vehicle can have many drivers
 b.trip can be created with one driver and one vehicle
 
-=====================================================================================================================================
-Tasks:
+=========================================================
 Database Design:
 a. Outline the database schema, including tables, relationships, and key constraints.
 Database Configurations Should be edited in the "TripManagementSystem/config/mysql_database.go" file
@@ -218,7 +217,7 @@ CREATE TABLE `driver_vehicle_mappings` (
 - The `driver_id` column references the `driver_id` in the `drivers` table (`fk_drivers2`).
 - The `vehicle_id` column references the `vehicle_id` in the `vehicles` table (`fk_vehicles1`).
 
-=====================================================================================================================================
+=========================================================
 b. Justify your design choices, considering factors such as scalability, data integrity, and ease of
 querying.
 
@@ -255,7 +254,7 @@ Scalability and Performance of the Database Schema considering the Normalization
 retrieval and relationship integrity.
 - **Partitioning**: Could be partitioned based on started_at or ended_at to manage historical data more efficiently.
 
-=====================================================================================================================================
+=========================================================
 Concurrency in Golang:
 a. Implement a Golang program that simulates concurrent requests to the Trip Management System.
 The program should perform the following operations concurrently:
@@ -287,7 +286,7 @@ Api Endpoints:
 | Update Trip Status | `/v1/trip/status/1`    | PUT         | `application/json`       | `{ "trip_status": "DriverAssigned" }`                                                                                                                                                                                                                                                                                                                                                                             | `{ "code": 200, "status": "Ok" }`                                |
 | Add DV Mapping    | `/v1/dv_mapping`       | POST        | `application/json`       | `{ "driver_id": 1, "vehicle_id": 1, "mapping_started_at": "2024-01-12T15:04:05Z", "mapping_ended_at": "2024-01-13T15:04:05Z" }`                                                                                                                                                                                                                                                                                   | `{ "code": 200, "status": "Ok", "data": { "mapping_id": 1 } }`  |
 
-=====================================================================================================================================
+=========================================================
 b. Address potential race conditions and ensure data consistency.
 * Updating Trip Status of the trip:    When the trip status is being read and updated simutaneously by two requests it can cause the race condition. Transactions are crucial for ensuring data consistency, especially when dealing with operations that should be atomic. Here we have to wrap the read and write operations in a transaction. So one will have to wait for the other to complete, ensuring data integrity. 
 
@@ -337,8 +336,8 @@ func (t *TripRepositoryImpl) UpdateTravelStatus(trip model.Trips) error {
 	return nil
 }
 ```
-* 
-=====================================================================================================================================
+
+=========================================================
 c. Use appropriate Golang concurrency primitives (e.g., goroutines, channels) to achieve parallelism.
 This project designed as APIs to perform the Operations, To acheive parallelism I have implemented it as a unit test.
 path: "TripManagementSystem/concurrent_operations_test.go"
@@ -521,7 +520,7 @@ PASS
 ok      TripManagementSystem    5.391s
 
 ```
-=====================================================================================================================================
+=========================================================
 Advanced Concepts:
 a. Explain how you would handle long-running tasks (e.g., complex database queries, external API calls) concurrently without blocking the main application flow.
 # Use of Goroutines for Asynchronous Execution
