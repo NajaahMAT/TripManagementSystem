@@ -337,7 +337,7 @@ func (t *TripRepositoryImpl) UpdateTravelStatus(trip model.Trips) error {
 }
 ```
 
-=========================================================
+====================================================
 c. Use appropriate Golang concurrency primitives (e.g., goroutines, channels) to achieve parallelism.
 This project designed as APIs to perform the Operations, To acheive parallelism I have implemented it as a unit test.
 path: "TripManagementSystem/concurrent_operations_test.go"
@@ -545,7 +545,7 @@ a. Explain how you would handle long-running tasks (e.g., complex database queri
 
 
 
-=====================================================================================================================================
+===================================================
 b. Share any experience or examples where you have applied advanced concurrency concepts in Golang.
 Experience:  Created Price files with the estimated fares using the (Pickup , Drop Locations (Lat, Lon)) for all vehicle types simultaneously which are available within the selected region in the PickMe Application.
 * I have spawn a goroutine for each vehicle type to calculate the fare estimate concurrently. This is done using go func(vt VehicleType) { ... }(vehicleType).
