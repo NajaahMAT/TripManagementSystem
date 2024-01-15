@@ -11,7 +11,7 @@ type Trips struct {
 	DriverID          int64     `gorm:"not null;comment:'Reference to the driver of the trip'"`
 	PassengerID       int64     `gorm:"not null;comment:'Reference to the passenger of the trip'"`
 	TripStatus        string    `gorm:"type:varchar(50);comment:'Current status of the trip'"`
-	TripType          string    `gorm:"type:varchar(50);comment:'Type of the trip, Eg: Ride/Package/Rental'"`
+	TripType          string    `gorm:"type:varchar(50);comment:'Type of the trip, Eg:'"`
 	PaymentMethod     int       `gorm:"type:int;comment:'Identifier for the payment method used'"`
 	PaymentStatus     int       `gorm:"type:int;comment:'Status of the payment for the trip'"`
 	PickupTime        time.Time `gorm:"comment:'Time when the passenger was picked up'"`

@@ -3,9 +3,10 @@ package router1
 import (
 	"TripManagementSystem/config"
 	"TripManagementSystem/controller"
-	"TripManagementSystem/model"
+	"TripManagementSystem/helper"
 	"TripManagementSystem/repository"
 	"TripManagementSystem/service"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,7 @@ import (
 )
 
 type Dependencies struct {
-	TagsController      *controller.TagsController
+	// TagsController      *controller.TagsController
 	VehicleController   *controller.VehicleController
 	DriverController    *controller.DriverController
 	TripController      *controller.TripController
@@ -24,20 +25,11 @@ func InitializeDependencies() *Dependencies {
 	db := config.DatabaseConnection()
 	validate := validator.New()
 
-	db.Table("tags").AutoMigrate(&model.Tags{})
-	db.Table("vehicles").AutoMigrate(&model.Vehicles{})
-	db.Table("drivers").AutoMigrate(&model.Drivers{})
-	db.Table("trips").AutoMigrate(&model.Trips{})
-	db.Exec("ALTER TABLE trips ADD CONSTRAINT fk_vehicles FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)")
-	db.Exec("ALTER TABLE trips ADD CONSTRAINT fk_drivers FOREIGN KEY (driver_id) REFERENCES drivers(driver_id)")
-	db.Table("driver_vehicle_mappings").AutoMigrate(&model.DriverVehicleMappings{})
-	db.Exec("ALTER TABLE driver_vehicle_mappings ADD CONSTRAINT fk_vehicles1 FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id)")
-	db.Exec("ALTER TABLE driver_vehicle_mappings ADD CONSTRAINT fk_drivers2 FOREIGN KEY (driver_id) REFERENCES drivers(driver_id)")
-
-	// Setup for tag
-	tagsRepository := repository.NewTagsRepositoryImpl(db)
-	tagsService := service.NewTagsServiceImpl(tagsRepository, validate)
-	tagsController := controller.NewTagsController(tagsService)
+	// Call AutoMigrate from migrations.go
+	if err := helper.AutoMigrate(db); err != nil {
+		// Handle error, for example, log it or panic
+		log.Fatalf("Migration failed: %v", err)
+	}
 
 	// Setup for Vehicle
 	vehicleRepository := repository.NewVehicleRepositoryImpl(db)
@@ -60,7 +52,7 @@ func InitializeDependencies() *Dependencies {
 	dvMappingController := controller.NewDVMappingController(dvMappingService)
 
 	return &Dependencies{
-		TagsController:      tagsController,
+		// TagsController:      tagsController,
 		VehicleController:   vehicleController,
 		DriverController:    driverController,
 		TripController:      tripController,
@@ -76,13 +68,6 @@ func NewRouter(deps *Dependencies) *gin.Engine {
 	})
 
 	baseRouter := router.Group("/v1")
-
-	tagsRouter := baseRouter.Group("/tags")
-	tagsRouter.GET("", deps.TagsController.FindAll)
-	tagsRouter.GET("/:tagsId", deps.TagsController.FindById)
-	tagsRouter.POST("", deps.TagsController.Create)
-	tagsRouter.PATCH("/:tagsId", deps.TagsController.Update)
-	tagsRouter.DELETE("/:tagsId", deps.TagsController.Delete)
 
 	vehicleRouter := baseRouter.Group("/vehicle")
 	vehicleRouter.POST("", deps.VehicleController.Create)
